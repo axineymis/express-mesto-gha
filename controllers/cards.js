@@ -9,7 +9,7 @@ module.exports.createCard = (req, res) => {
       if (err.name === "ValidationError") {
         return res
           .status(400)
-          .send({ message: "Переданы некорректные данные" });
+          .send({ message: "Не удалось создать карточку" });
       }
       return res.status(500).send({ message: err.message });
     });
@@ -42,11 +42,7 @@ module.exports.deleteCard = (req, res) => {
 };
 
 module.exports.likeCard = (req, res) => {
-  Card.findByIdAndUpdate(
-    req.params.cardId,
-    { $addToSet: { likes: req.user._id } },
-    { new: true }
-  )
+  Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true })
     .then((card) => {
       if (!card) {
         return res

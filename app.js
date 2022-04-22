@@ -15,13 +15,13 @@ mongoose.connect("mongodb://localhost:27017/mestodb", {
   useNewUrlParser: true,
 });
 
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: "625592bc39d08a99d5deb442",
-//   };
+app.use((req, res, next) => {
+  req.user = {
+    _id: "626260ffc29930fc19f160c4",
+  };
 
-//   next();
-// });
+  next();
+});
 app.use("/users", require("./routes/users"));
 
 app.use("/cards", require("./routes/cards"));
