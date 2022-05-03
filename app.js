@@ -10,8 +10,10 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 
 app.use(bodyParser.json());
-app.use(cookieParser);
+
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(cookieParser);
 
 const mongoose = require("mongoose");
 
@@ -21,7 +23,7 @@ mongoose.connect("mongodb://localhost:27017/mestodb", {
 
 const { login, createUser } = require("./controllers/users");
 const auth = require("./middlewares/auth");
-const handleError = require("./errors/handleError");
+const errorCatcher = require("./errors/errorCatcher");
 
 app.post("/signin", celebrate({
   body: Joi.object().keys({
@@ -40,14 +42,6 @@ app.post("/signup", celebrate({
   }),
 }), createUser);
 
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: "626260ffc29930fc19f160c4",
-//   };
-
-//   next();
-// });
-
 app.use(auth);
 app.use("/users", require("./routes/users"));
 
@@ -58,7 +52,7 @@ app.all("*", (req, res) => {
 });
 
 app.use(errors());
-app.use(handleError);
+app.use(errorCatcher);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
