@@ -1,7 +1,7 @@
 const Card = require("../models/card");
 const ValidationError = require("../errors/ValidationError");
 const NotFoundError = require("../errors/NotFoundError");
-const ForbiddenError = require("../errors/ForbiddenError");
+const AccessError = require("../errors/AccessError");
 
 module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
@@ -30,7 +30,7 @@ module.exports.deleteCard = (req, res, next) => {
         next(new NotFoundError("Карточки с таким ID не существует"));
       }
       if (req.user._id !== card.owner._id.toString()) {
-        next(new ForbiddenError("Невозможно удалить чужую карточку"));
+        next(new AccessError("Невозможно удалить чужую карточку"));
       }
       return res.send(card);
     })
@@ -68,14 +68,6 @@ module.exports.dislikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } },
     { new: true }
   )
-    .then((card) => {
-      if (!card) {
-        return res
-          .status(404)
-          .send({ message: "Карточки с таким ID не существует" });
-      }
-      return res.send(card);
-    })
     .then((card) => {
       if (!card) {
         return next(new NotFoundError("Карточки с указанным ID не существует"));

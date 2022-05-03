@@ -21,7 +21,7 @@ mongoose.connect("mongodb://localhost:27017/mestodb", {
 
 const { login, createUser } = require("./controllers/users");
 const auth = require("./middlewares/auth");
-const errorCatcher = require("./errors/errorCatcher");
+const handleError = require("./errors/handleError");
 
 app.post("/signin", celebrate({
   body: Joi.object().keys({
@@ -58,7 +58,7 @@ app.all("*", (req, res) => {
 });
 
 app.use(errors());
-app.use(errorCatcher);
+app.use(handleError);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
