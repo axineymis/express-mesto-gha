@@ -23,6 +23,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const errorCatcher = require('./errors/errorCatcher');
+const NotFoundError = require('./errors/NotFoundError');
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -46,8 +47,8 @@ app.use('/users', require('./routes/users'));
 
 app.use('/cards', require('./routes/cards'));
 
-app.all('*', (req, res) => {
-  res.status(404).send({ message: 'Путь не найден' });
+app.all('*', (req, res, next) => {
+  next(new NotFoundError('По указанному пути ничего нет'));
 });
 
 app.use(errors());

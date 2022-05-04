@@ -12,6 +12,7 @@ const {
 
 // router.post("/", createUser);
 router.get('/', getUsers);
+router.get('/me', getMe);
 router.get('/:userId', celebrate({
   params: Joi.object().keys({
     userId: Joi.string().length(24).hex().required(),
@@ -33,7 +34,5 @@ router.patch('/me', celebrate({
     about: Joi.string().min(2).max(30),
   }),
 }), patchProfile);
-
-router.get('/me', getMe);
 
 module.exports = router;
